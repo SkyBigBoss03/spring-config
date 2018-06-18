@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.jt.manage.mapper.ItemCatMapper">
+	
+	<!--动态更新:获取其中不为null的数据参与更新操作
+		set标签作用:能够去除where条件前多余的1个逗号
+	  -->
+	<update id="updateItem">
+		update user name = #{name} where id = #{id}
+			<set>
+				<if test="name !=null">name = #{name},</if>   
+				<if test="age !=null">age = #{age},</if>
+				<if test="sex !=null">sex=#{sex},</if>
+			</set>  
+		where id = #{id}
+	</update>
+	
+	<!--动态查询
+		需求:能够按照对象中不为空的数据充当where条件
+		where标签的作用: 去除where 后边多余的一个and
+	  -->
+	
+	<select id="findUser">
+		select * from user 
+		<where>
+			<if test="id !=null"> id = #{id}</if>
+			<if test="name !=null"> and name = #{name}</if>
+			<if test="age !=null"> and age = #{age}</if>
+			<if test="sex !=null"> and sex = #{sex}</if>
+		</where>
+	</select>
+	
+	
+	
+	
+	
+	
+	
+	
+</mapper>

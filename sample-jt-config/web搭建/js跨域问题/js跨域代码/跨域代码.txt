@@ -1,0 +1,18 @@
+//查询商品分配目录
+	@RequestMapping("/web/itemcat/all")
+	public void findItemCatAll(String callback,HttpServletResponse response){
+		
+		//拼接返回后的数据格式：category.getDataService(JSON);
+		//获取三级分类目录
+		ItemCatResult itemCatResult = itemCatService.findItemCatAll();
+		try {
+			String JSON = objectMapper.writeValueAsString(itemCatResult); //将数据转化为JSON串
+			String callbackJSON = callback +"("+JSON+")";                 //拼接请求回调参数
+			response.setContentType("text/html;charset=utf-8");			  //设定字符集
+			response.getWriter().write(callbackJSON);                     //回显参数
+		} catch (JsonProcessingException e) {
+			e.printStackTrace();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+	}

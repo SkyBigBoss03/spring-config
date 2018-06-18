@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE configuration
+  PUBLIC "-//mybatis.org//DTD Config 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-config.dtd">
+<configuration>
+	
+	<!--1.Mybatis的配置文件有顺序要求.
+		Content Model : (properties?, settings?, typeAliases?, typeHandlers?, objectFactory?, 
+ objectWrapperFactory?, reflectorFactory?, plugins?, environments?, databaseIdProvider?, 
+ mappers?)
+ 		
+ 		2.功能:
+ 			1.添加mybatis自己的配置
+ 		
+ 		3. mybatis的优点:
+			可以实现自动的对象关系映射(orm)
+			select * from user 结果集   (反射技术)   User对象
+		3.1 映射问题:
+			如果字段和对象的属性不一致时,使用resultType不能
+			实现自动的映射.那么必须按照要求编辑resultMap.
+			但是编辑resultMap的格式较为繁琐和复杂.所以除非特殊
+			的环境要求(多表关联查询),否则少使用resultMap
+		3.2解决方案:使用驼峰规则映射
+			<setting name="mapUnderscoreToCamelCase" value="true" />
+			说明:如果mybatis开启了驼峰映射规则,那么可以将
+			column= user_name   和   User(username)
+					user_namen           user_name
+			实现自动的映射
+			步骤:
+			1.根据sql语句获取结果集对象,之后通过反射规则进行对象的
+			赋值操作.
+			2.将字段中的"_"去掉,动态匹配对象中的属性,进行赋值操作.
+			3.驼峰映射的现象: column= user_name ~~~~~userName|userNAME|username....
+			  只要字母相同即可.
+			  
+		4.Mybatis中的缓存
+			4.1一级缓存
+				级别:sqlSession级别  
+				说明:在同一个sqlSession内实现数据共享
+				默认是开启的.
+				类比:相当于获取数据库链接,在一个链接上实现数据共享.
+				
+				SqlSession sqlSession = connection.getSqlSession();
+				sqlSession.selectList("映射文件的路径.sqlId")
+				sqlSession.selectList("映射文件的路径.sqlId")
+				
+			4.2二级缓存
+				级别:sqlSessionFactory 
+				说明:由工厂模式所生产的sqlSession都实现数据共享.
+				补充:由于mybatis提供的二级缓存效率太低,开发中几乎不同.
+	  -->
+	<settings>
+		<!-- 开启驼峰自动映射 -->
+		<setting name="mapUnderscoreToCamelCase" value="true" />
+		
+		<!-- 二级缓存的总开关，被redis替代 -->
+		<setting name="cacheEnabled" value="false" />
+	</settings>
+	
+	
+	<plugins>
+		<!-- 分页插件：com.github.pagehelper为PageHelper类所在包名 -->
+		<plugin interceptor="com.github.pagehelper.PageHelper">
+			<!-- 方言 -->
+			<property name="dialect" value="mysql" />
+			<!-- 该参数默认为false -->
+			<!-- 设置为true时，使用RowBounds分页会进行count查询，查询数据总条数 -->
+			<property name="rowBoundsWithCount" value="true" />
+		</plugin>
+		
+		<!-- 通用Mapper插件 -->
+		<plugin interceptor="com.github.abel533.mapperhelper.MapperInterceptor">
+			<!--主键自增回写方法,默认值MYSQL,详细说明请看文档 -->
+			<property name="IDENTITY" value="MYSQL" />
+			<!--通用Mapper接口，多个通用接口用逗号隔开 -->
+			<property name="mappers" value="com.jt.common.mapper.SysMapper" />
+		</plugin>
+	</plugins>
+	
+	
+	
+	
+	
+	
+	
+	
+	
+</configuration>

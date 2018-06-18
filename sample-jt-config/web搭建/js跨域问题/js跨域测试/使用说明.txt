@@ -1,0 +1,2 @@
+将文件存入jt-manage-controller中 测试 
+再将文件存入jt-web中，进行跨域测试 不要修改代码

@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:context="http://www.springframework.org/schema/context"
+	xmlns:mvc="http://www.springframework.org/schema/mvc"
+	xsi:schemaLocation="
+		http://www.springframework.org/schema/beans 
+		http://www.springframework.org/schema/beans/spring-beans.xsd
+        http://www.springframework.org/schema/mvc 
+        http://www.springframework.org/schema/mvc/spring-mvc-4.0.xsd
+        http://www.springframework.org/schema/context 
+        http://www.springframework.org/schema/context/spring-context.xsd">
+
+
+	<!--开启mvc注解  -->
+	<mvc:annotation-driven/>
+	
+	<!--开启包扫描  -->
+	<context:component-scan base-package="com.jt.web.controller"/>
+	
+	<!--定义视图解析器  -->
+	<bean class="org.springframework.web.servlet.view.InternalResourceViewResolver">
+		<!--定义前缀和后缀  -->
+		<property name="prefix" value="/WEB-INF/views/"/>
+		<property name="suffix" value=".jsp"/>
+	</bean>
+	
+	<!--定义文件上传视图解析器  规定id的值必须为multipartResolver-->
+	<bean id="multipartResolver" class="org.springframework.web.multipart.commons.CommonsMultipartResolver">
+		<!--定义文件上传最大值 10M   1024*1024*10 =10485760 -->
+		<property name="maxUploadSize" value="10485760"/>
+		<!--定义文件上传的编码  -->
+		<property name="defaultEncoding" value="UTF-8"/>
+	</bean>
+	
+	<!--放行静态资源文件  -->
+	<mvc:default-servlet-handler/>
+	
+	<!--定义拦截器,当用户没有登陆时不能直接访问购物车  -->
+	<mvc:interceptors>
+		<mvc:interceptor>
+			<!--只对购物车生效  必须以mvn mapping开头-->
+			<mvc:mapping path="/cart/**"/>
+			<mvc:mapping path="/order/**"/>
+			<bean class="com.jt.web.interceptor.WebInterceptor"></bean>
+		</mvc:interceptor>
+	</mvc:interceptors>
+</beans>

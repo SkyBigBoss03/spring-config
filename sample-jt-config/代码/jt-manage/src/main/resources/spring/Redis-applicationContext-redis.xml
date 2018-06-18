@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:context="http://www.springframework.org/schema/context"
+	xmlns:mvc="http://www.springframework.org/schema/mvc"
+	xsi:schemaLocation="
+		http://www.springframework.org/schema/beans 
+		http://www.springframework.org/schema/beans/spring-beans.xsd
+        http://www.springframework.org/schema/mvc 
+        http://www.springframework.org/schema/mvc/spring-mvc-4.0.xsd
+        http://www.springframework.org/schema/context 
+        http://www.springframework.org/schema/context/spring-context.xsd">
+	
+	<!--每次都创建jedis对象性能较低 创建jedis线程池  -->
+	<bean id="poolConfig" class="redis.clients.jedis.JedisPoolConfig">
+		<!--定义连接总数  -->
+		<property name="maxTotal" value="${redis.maxTotal}"/>
+		<!--定义最大闲置资源  -->
+		<property name="maxIdle" value="${redis.maxIdle}"/>
+		<!--定义是否自动连接  -->
+		<property name="testOnBorrow" value="${redis.testOnBorrow}"/>
+	</bean>
+	
+	
+	
+	<!--定义jedis工厂模式  -->
+	<bean id="jedisConnectionFactory" class="org.springframework.data.redis.connection.jedis.JedisConnectionFactory" >
+		<!--定义远程主机  -->
+		<property name="hostName" value="${redis.host}"/>
+		<!--定义端口号 -->
+		<property name="port" value="${redis.port}"/>
+		<!--引入配置文件  -->
+		<property name="poolConfig" ref="poolConfig"/>
+	</bean>
+	
+	<!--定义redisTemplate方便操作redis  -->
+	<bean id="stringRedisTemplate" class="org.springframework.data.redis.core.StringRedisTemplate">
+		<property name="connectionFactory" ref="jedisConnectionFactory"/>
+	</bean>
+	
+	<!--配置jedis -->
+	<!-- <bean id="jedis" class="redis.clients.jedis.Jedis">
+		<constructor-arg index="0" value="${redis.host}" type="java.lang.String"/>
+		<constructor-arg index="1" value="${redis.port}" type="int"/>
+	</bean> -->
+</beans>

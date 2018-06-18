@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.jt.manage.mapper.ItemMapper">
+	
+	<!--查询记录总数  -->
+	<select id="findItemConunt" resultType="int">
+		select count(*) from tb_item
+	</select>
+
+	<!--实现分页查询  -->
+	<select id="findItemList" resultType="Item">
+		select * from tb_item order by updated desc limit #{start},#{rows}
+	</select>
+	
+	
+	<!--实现商品分类的名称的查询  -->
+	<select id="findItemCatById" resultType="string">
+		select name from tb_item_cat where id = #{itemCatId}
+	</select>
+	
+	
+	<!--
+		规则
+		collection:
+			List集合数据   list
+			Array数组         array
+			Map集合		 map中的key
+		separator:循环的分隔符
+		item:表示循环遍历的参数:形参
+	  -->
+	<!--批量实现数据的更新  -->
+	<update id="updateStatus">
+		update tb_item set status = #{status},updated = now()
+		
+		where id in (
+			<foreach collection="ids" item="id" separator=",">
+				#{id}
+			</foreach>
+		)
+	</update>
+</mapper>
